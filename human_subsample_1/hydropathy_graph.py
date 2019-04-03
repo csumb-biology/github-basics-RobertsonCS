@@ -2,6 +2,16 @@
 
 #Working template of hydropathy score calculation script
 #You need to put in comments for every line
+import sys
+import re
+
+if len(sys.argv)<8:
+    print ""
+    print "Usage: hydropathy_graph.py -i <input file> -o <output file>"
+    print "-i: input file"
+    print "-o: output file"
+    print ""
+
 
 InFileName = "amino_acid_hydropathy_values.txt"
 InFile = open(InFileName, 'r')
@@ -17,11 +27,9 @@ for Line in InFile:
     LineNumber = LineNumber + 1
 InFile.close()
 
-window = raw_input("Window size?")
 window=int(window)
 Value=0
 window_counter=0
-InSeqFileName = raw_input("Name of sequence file to analyze?\n")
 InSeqFile = open(InSeqFileName, 'r')
 LineNumber = 0
 
