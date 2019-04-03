@@ -3,14 +3,7 @@
 #Working template of hydropathy score calculation script
 #You need to put in comments for every line
 import sys
-import re
-
-if len(sys.argv)<8:
-    print ""
-    print "Usage: hydropathy_graph.py -i <input file> -o <output file>"
-    print "-i: input file"
-    print "-o: output file"
-    print ""
+from matplotlib import pyplot
 
 
 InFileName = "amino_acid_hydropathy_values.txt"
@@ -27,28 +20,37 @@ for Line in InFile:
     LineNumber = LineNumber + 1
 InFile.close()
 
-window=int(window)
+for i in range(len(sys.argv)):
+    if sys.argv[i] == "-i":
+        InSeqFileName = sys.argv[i+1]
+    if sys.argv[i] == "-w":
+        window = sys.argv[i+1]
+
 Value=0
 window_counter=0
 InSeqFile = open(InSeqFileName, 'r')
 LineNumber = 0
+HpValues = []
+window_counters = []
+
 
 for Line in InSeqFile:
     if(LineNumber>0):
         ProtSeq=Line.strip('\n')
     LineNumber = LineNumber + 1
 InSeqFile.close()
-
-OutFileName = InSeqFileName.strip('.fasta') + ".output.csv"
-OutFile = open(OutFileName,"w")
+OutFileName = InSeqFileName.strip('.fasta') + "_" + window + ".png"
 
 for i in range(len(ProtSeq)):
     Value+=Hydropathy[ProtSeq[i]]
     if(i>(window-1) and i<=(len(ProtSeq)-window)):
         Value=Value-Hydropathy[ProtSeq[i-window]]
-        OutString = "%d,%.2f" % (window_counter, Value)
-        OutFile.write(OutString + "\n")
-
+        HpValues.append(Value)
+        window_counters.append(window_counter)
     window_counter+=1
 
-OutFile.close()
+#graphing
+pyplot.plot(window_counters,HpValues)
+pyplot.xlabel('Window')
+pyplot.ylabel('Hydropathy')
+pyplot.savefig(OutFileName)
